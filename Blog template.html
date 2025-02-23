@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blog</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+        body {
+            margin-bottom: 60px;
+        }
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: #f8f9fa;
+        }
+        .blog-card {
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40px;
+            line-height: 60px;
+            background-color: #f5f5f5;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">My Blog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Categories
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                        <a class="dropdown-item" href="#">Category 1</a>
+                        <a class="dropdown-item" href="#">Category 2</a>
+                        <a class="dropdown-item" href="#">Category 3</a>
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <div class="row justify-content-center mt-5">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="text-center">Sign Up</h2>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        {{ form.as_p }}
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-primary" type="submit">Sign Up</button>
+                                        </div>
+                                    </form>
+                                    <hr>
+                                    <div class="text-center">
+                                        <p>Already have an account?</p>
+                                        <a href="{% url 'login' %}" class="btn btn-outline-secondary">Login</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </li>
+            </ul>
+        </div>
+    </nav>
+<!--Login-->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Login</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" type="submit">Login</button>
+                        </div>
+                    </form>
+                    <hr>
+                    <div class="text-center">
+                        <p>Don't have an account?</p>
+                        <a href="{% url 'signup' %}" class="btn btn-outline-secondary">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Search bar-->
+    <form class="form-inline my-2 my-lg-0" method="get" action="#">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q" value="">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+
+    {%if user.is_authenticated %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Welcome, {{ user.username }}
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileDropdown">
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item">Logout</button>
+            </form>
+        </div>
+    </li>
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="login" onclick="openLoginModal(); return false;">Login</a>
+    </li>
+{% endif %}
+
+
+    <style>
+        /* Custom styles for form elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        form p {
+            margin-bottom: 1rem;
+        }
+        
+        form p label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        form p input {
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+        
+        .errorlist {
+            color: #dc3545;
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+
+
+    ###SIgn up
+
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Sign Up</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" type="submit">Sign Up</button>
+                        </div>
+                    </form>
+                    <hr>
+                    <div class="text-center">
+                        <p>Already have an account?</p>
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary">Login</a>
+                    </div>
+                </div>
+           
+        </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="blog-card col-md-9">
+                <h2>Blog Post Title 1</h2>
+                <p><small>By Author on January 1, 2023</small></p>
+                <p>This is a sample blog post content. It provides an overview of the topic discussed in the post.</p>
+                <a href="#" class="btn btn-primary mt-3">Read More</a>
+
+                <h2>Blog Post Title 2</h2>
+                <p><small>By Author on January 1, 2023</small></p>
+                <p>This is a sample blog post content. It provides an overview of the topic discussed in the post.</p>
+                <a href="#" class="btn btn-primary mt-3">Read More</a>
+
+                <h2>Blog Post Title 3 </h2>
+                <p><small>By Author on January 1, 2023</small></p>
+                <p>This is a sample blog post content. It provides an overview of the topic discussed in the post.</p>
+                <a href="#" class="btn btn-primary mt-3">Read More</a>
+
+                
+                <!-- <h2>Comments</h2>
+                <ul>
+                    <li>
+                        <strong>User1</strong> | <small>January 2, 2023, 10:00 AM</small>
+                        <p>This is a sample comment.</p>
+                    </li>
+                    <li>
+                        <strong>User2</strong> | <small>January 3, 2023, 11:00 AM</small>
+                        <p>This is another sample comment.</p>
+                    </li>
+                </ul>
+                <form action="#" method="post">
+                    <textarea name="content" placeholder="Add a comment"></textarea>
+                    <button type="submit">Comment</button>
+                </form> -->
+            </div>
+            <div class="col-md-3">
+                <h4>Categories</h4>
+                <div class="row">
+                    <div class="col-4 mb-2">
+                        <a href="#" class="btn btn-outline-primary">Category 1</a>
+                    </div>
+                    <div class="col-4 mb-2">
+                        <a href="#" class="btn btn-outline-primary">Category 2</a>
+                    </div>
+                    <div class="col-4 mb-2">
+                        <a href="#" class="btn btn-outline-primary">Category 3</a>
+                    </div>
+                </div>
+
+                <h4>Tags</h4>
+                <div class="row">
+                    <div class="col-4 mb-2">
+                        <a href="#" class="btn btn-outline-primary">Tag 1</a>
+                    </div>
+                    <div class="col-4 mb-2">
+                        <a href="#" class="btn btn-outline-primary">Tag 2</a>
+                    </div>
+                    <div class="col-4 mb-2">
+                        <a href="#" class="btn btn-outline-primary">Tag 3</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2023 My Blog</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

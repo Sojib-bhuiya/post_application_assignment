@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+{%block title%}All Blog posts{% endblock %}
+
+{% block content %}
+<a class ='nav-link' href="{% url 'post_create' %}">Create Post</a>
+
+<ul class = 'list-group'>
+    {%for post in posts %}
+    <li class="list-group-item">
+        <h2><a href="{% url 'post_details' post.id %}">{{ post.title }}</a></h2>
+        <small>By {{ post.author }} on {{ post.created_at }}</small>
+        <p>{{ post.content| truncatewords:30}}</p>
+    </li>
+    {% empty%}
+    <li> No posts found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

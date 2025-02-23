@@ -1,0 +1,69 @@
+{% extends "blog/base.html" %}
+{%block title%}{{post.title}}{% endblock %}
+{% block content %}
+
+    <div class="container p-0">
+        <h2>{{ post.title }}</h2>
+        <small>By {{ post.author }} on {{ post.created_at }}</small>
+        <p>{{ post.content}}</p>
+    </div>
+
+    <div class="conatiner p-0 mb-2">
+        <span class="badge badge-pill badge-primary">Views: {{ post.count_view }}</span>
+        <span class="badge badge-pill badge-success">Likes: {{ post.liked_users.count }}</span>
+    </div>
+
+    {% if is_liked %}
+    <div class="container mt-2 mb-2 p-0">
+        <a href="{% url "like" post.id %}" type="button" class="btn btn-primary">👍Liked</a>
+    </div>
+    {% else %}
+    <div class="container mt-2 mb-2 p-0">
+        <a href="{% url "like" post.id %}" type="button" class="btn btn-outline-primary">👎Unlike</a>
+    </div>
+    {% endif %}
+
+
+    {%if user == post.author %} 
+    <a class ='nav-link' href="{% url 'post_update' post.id %}">Edit Post</a>
+    <a class ='nav-link' href="{% url 'post_delete' post.id %}">Delete Post</a>
+    {%endif %}
+
+    <h3>Comments:</h3>
+    <div class="comment-section">
+        <!-- Specific place for success messages -->
+        {% if messages %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ comment_form.content }}
+        <button type="submit" class="d-block btn btn-primary mt-2">Submit Comment</button>
+    </form>
+    {% else %}
+    <p>You must be login for sumbit a comment.</p>
+    {% endif %}
+
+
+    {% for comment in  comments %}
+    <div class="card my-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ comment.author }}</h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">
+                {{ comment.created_at }}
+            </h6>
+            <p class="card-text">
+                {{ comment.content }}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+
+{% endblock %}
